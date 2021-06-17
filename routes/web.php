@@ -19,13 +19,19 @@ Route::get('/', function () {
 
 Route::get('/bot','BotController@bot')->middleware('verifybot');
 Route::post('/bot','BotController@bot');
-Route::get('/users/crenos/{day}/{id}/{type}','ClientController@getCrenos')->name('crenos');
+Route::get('/users/crenos/{id}/{type}/{day}','ClientController@getCrenos')->name('crenos');
 Route::get('/testMenu','BotController@persistantMenu');
+Route::get('/myrdv/{id}','ClientController@myRdv')->name('myrdv');
+Route::post('/myrdv','ClientController@cancelRdv')->name('cancelrdv');
 
+Route::get('/test',function(){
 
+});
 Route::get('/policy', function () {
 	$txt="we do not reveal any user information to public.";
 	return $txt;
 });
+
+Route::post('/users/reserver/','ClientController@reserver')->name('reserver');
 
 Route::get('/admin/home','AdminController@index')->name('index');

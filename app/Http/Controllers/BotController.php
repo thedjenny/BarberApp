@@ -8,6 +8,9 @@ use Illuminate\Http\Request;
 
 class BotController extends Controller
 {
+    public function __construct()
+    {
+    }
 
     public function bot(Request $request)
     {
@@ -24,7 +27,6 @@ class BotController extends Controller
         if (!empty($msg["message"])) {
             $command = $msg["message"]["text"];
             $this->sendSeen($id);
-
             $this->handlePostBack($id, "GET_STARTED");
             // When bot receive button click from user
         } else if (!empty($msg["postback"])) {
@@ -74,7 +76,9 @@ class BotController extends Controller
 
                 $this->sendAttachmentMessage($recipientId, $day);
                 break;
-
+            case "myrdv":{
+                $this->sendCancelMsg();
+            }
 
         }
     }
@@ -118,6 +122,8 @@ class BotController extends Controller
     {
 
 
+        $url = "https://5f26fa99f86a.ngrok.io/users/crenos/";
+
         $messageData = [
             "recipient" => [
                 "id" => $recipientId,
@@ -131,9 +137,31 @@ class BotController extends Controller
 
                         "elements"=>[
                             [
-                                "title"=>"كيراتين",
-                                "image_url"=>"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSj_EN7-0s8FSw0j9sU6pG35rygpdqF4AIvZi6OLRvnZsU2CbDSyrzXPzEDrVYfN4wV9wk&usqp=CAU",
-                                "subtitle"=>"Prix : 1000.00 DA",
+                                "title"=>"ديقرادي",
+                                "image_url"=>"https://www.mycoupe.fr/wp-content/uploads/2019/07/resultat-naturel-seche-cheveux-pour-homme-1-300x300.jpg",
+                                "subtitle"=>"250.00 DA",
+
+
+                                "default_action"=>[
+                                    "type"=>"web_url",
+                                    "url"=>"https://5f26fa99f86a.ngrok.io/users/crenos/$recipientId/1/$day",
+                                    "messenger_extensions"=> true,
+                                    "webview_height_ratio"=>"tall"
+                                ],
+
+                                "buttons" => [
+                                    [
+                                        "title"=> "احجز موعد الان",
+                                        "type"=> "web_url",
+                                        "url"=> "https://5f26fa99f86a.ngrok.io/users/crenos/$recipientId/1/$day",
+                                        "webview_height_ratio"=> "tall"
+                                    ],
+                                ],
+                            ],
+                            [
+                                "title"=>"ليسار + سيشوار",
+                                "image_url"=>"https://www.mycoupe.fr/wp-content/uploads/2019/07/resultat-naturel-seche-cheveux-pour-homme-1-300x300.jpg",
+                                "subtitle"=>"150.00 DA",
 
 
                                 "default_action"=>[
@@ -143,13 +171,100 @@ class BotController extends Controller
                                     "webview_height_ratio"=>"tall"
                                 ],
 
-                                "buttons"=> [
+                                "buttons" => [
                                     [
                                         "title"=> "احجز موعد الان",
                                         "type"=> "web_url",
                                         "url"=> "https://tik-barberbot.herokuapp.com/users/crenos",
                                         "webview_height_ratio"=> "tall"
+                                    ],
+                                ],
+                            ],
+                            [
+                                "title"=>"ليسار + سيشوار",
+                                "image_url"=>"https://www.mycoupe.fr/wp-content/uploads/2019/07/resultat-naturel-seche-cheveux-pour-homme-1-300x300.jpg",
+                                "subtitle"=>"150.00 DA",
 
+
+                                "default_action"=>[
+                                    "type"=>"web_url",
+                                    "url"=>"https://tik-barberbot.herokuapp.com/users/crenos",
+                                    "messenger_extensions"=> true,
+                                    "webview_height_ratio"=>"tall"
+                                ],
+
+                                "buttons" => [
+                                    [
+                                        "title"=> "احجز موعد الان",
+                                        "type"=> "web_url",
+                                        "url"=> "https://tik-barberbot.herokuapp.com/users/crenos",
+                                        "webview_height_ratio"=> "tall"
+                                    ],
+                                ],
+                            ],
+                            [
+                                "title"=>"ليسار + سيشوار",
+                                "image_url"=>"https://www.mycoupe.fr/wp-content/uploads/2019/07/resultat-naturel-seche-cheveux-pour-homme-1-300x300.jpg",
+                                "subtitle"=>"150.00 DA",
+
+
+                                "default_action"=>[
+                                    "type"=>"web_url",
+                                    "url"=>"https://tik-barberbot.herokuapp.com/users/crenos",
+                                    "messenger_extensions"=> true,
+                                    "webview_height_ratio"=>"tall"
+                                ],
+
+                                "buttons" => [
+                                    [
+                                        "title"=> "احجز موعد الان",
+                                        "type"=> "web_url",
+                                        "url"=> "https://tik-barberbot.herokuapp.com/users/crenos",
+                                        "webview_height_ratio"=> "tall"
+                                    ],
+                                ],
+                            ],
+                            [
+                                "title"=>"ليسار + سيشوار",
+                                "image_url"=>"https://www.mycoupe.fr/wp-content/uploads/2019/07/resultat-naturel-seche-cheveux-pour-homme-1-300x300.jpg",
+                                "subtitle"=>"150.00 DA",
+
+
+                                "default_action"=>[
+                                    "type"=>"web_url",
+                                    "url"=>"https://tik-barberbot.herokuapp.com/users/crenos",
+                                    "messenger_extensions"=> true,
+                                    "webview_height_ratio"=>"tall"
+                                ],
+
+                                "buttons" => [
+                                    [
+                                        "title"=> "احجز موعد الان",
+                                        "type"=> "web_url",
+                                        "url"=> "https://tik-barberbot.herokuapp.com/users/crenos",
+                                        "webview_height_ratio"=> "tall"
+                                    ],
+                                ],
+                            ],
+                            [
+                                "title"=>"ليسار + سيشوار",
+                                "image_url"=>"https://www.mycoupe.fr/wp-content/uploads/2019/07/resultat-naturel-seche-cheveux-pour-homme-1-300x300.jpg",
+                                "subtitle"=>"150.00 DA",
+
+
+                                "default_action"=>[
+                                    "type"=>"web_url",
+                                    "url"=>"https://tik-barberbot.herokuapp.com/users/crenos",
+                                    "messenger_extensions"=> true,
+                                    "webview_height_ratio"=>"tall"
+                                ],
+
+                                "buttons" => [
+                                    [
+                                        "title"=> "احجز موعد الان",
+                                        "type"=> "web_url",
+                                        "url"=> "https://tik-barberbot.herokuapp.com/users/crenos",
+                                        "webview_height_ratio"=> "tall"
                                     ],
                                 ],
                             ],
@@ -225,6 +340,48 @@ class BotController extends Controller
                                 "type" => "postback",
                                 "payload" => "totomorrow"
                             ],
+                        ],
+
+                    ],
+                ],
+            ],
+        ];
+
+        //dd($messageData);
+
+        $ch = curl_init('https://graph.facebook.com/v6.0/me/messages?access_token=' . env("PAGE_ACCESS_TOKEN"));
+        // curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        // curl_setopt($ch, CURLOPT_HEADER, false);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, ["Content-Type: application/json"]);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($messageData));
+        curl_exec($ch);
+        curl_close($ch);
+    }
+
+    public function sendCancelMsg($recipientId)
+    {
+
+
+        $messageData = [
+            "recipient" => [
+                "id" => $recipientId,
+            ],
+            "message" => [
+                "attachment" => [
+                    "type" => "template",
+                    "payload" => [
+                        "template_type" => "button",
+                        "text" => "مبروك لقد تم حجز موعدك بنجاح شكرا على ثقتك",
+
+                        "buttons" => [
+                            [
+                                "title"=> "تصفح مواعيدي",
+                                "type"=> "web_url",
+                                "url"=> "https://5f26fa99f86a.ngrok.io/myrdv/$recipientId",
+                                "webview_height_ratio"=> "tall"
+                            ],
+
                         ],
 
                     ],
