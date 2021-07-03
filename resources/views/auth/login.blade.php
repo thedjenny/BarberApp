@@ -1,68 +1,52 @@
-@extends('layouts.app')
+<!DOCTYPE html>
+<html lang="{{ app()->getLocale() }}">
+<head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link href="{{ asset('template/login/style.css') }}" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-@section('content')
-<div class="container">
-    <div class="row">
-        <div class="col-md-8 col-md-offset-2">
-            <div class="panel panel-default">
-                <div class="panel-heading">Login</div>
-                <div class="panel-body">
-                    <form class="form-horizontal" role="form" method="POST" action="{{ route('login') }}">
-                        {{ csrf_field() }}
 
-                        <div class="form-group">
-                            <label for="email" class="col-md-4 control-label">Tel</label>
-
-                            <div class="col-md-6">
-                                <input id="email" type="text" class="form-control" name="tel" value="" required autofocus>
-
-                                @if ($errors->has('email'))
-                                    <span class="help-block">
-                                        <strong>{{ $errors->first('email') }}</strong>
-                                    </span>
-                                @endif
-                            </div>
+</head>
+<body>
+<!-- Main Content -->
+<div class="container-fluid">
+    <div class="row main-content bg-success text-center">
+        <div class="col-md-4 text-center company__info">
+            <span><h2>Welcome Barber</h2></span>
+        </div>
+        <div class="col-md-8 col-xs-12 col-sm-12 login_form ">
+            <div class="container-fluid">
+                <div class="row">
+                    <img src="{{ URL::to('/template/login/logo.png') }}">
+                </div>
+                <div class="row">
+                    <form class="form-group" method="POST" action="{{ route('login') }}">
+                        <div class="row">
+                            <input type="text" name="email" id="username" class="form__input" placeholder="Numero de tel">
                         </div>
-
-                        <div class="form-group{{ $errors->has('password') ? ' has-error' : '' }}">
-                            <label for="password" class="col-md-4 control-label">Password</label>
-
-                            <div class="col-md-6">
-                                <input id="password" type="password" class="form-control" name="password" required>
-
-                                @if ($errors->has('password'))
-                                    <span class="help-block">
-                                        <strong>{{ $errors->first('password') }}</strong>
-                                    </span>
-                                @endif
-                            </div>
+                        <div class="row">
+                            <!-- <span class="fa fa-lock"></span> -->
+                            <input type="password" name="password" id="password" class="form__input" placeholder="Mot de passe">
                         </div>
-
-                        <div class="form-group">
-                            <div class="col-md-6 col-md-offset-4">
-                                <div class="checkbox">
-                                    <label>
-                                        <input type="checkbox" name="remember" > Remember Me
-                                    </label>
-                                </div>
-                            </div>
+                        <div class="row">
+                            <input type="checkbox" name="remember" {{ old('remember') ? 'checked' : '' }}>
+                            <label for="remember_me">Remember Me!</label>
                         </div>
-
-                        <div class="form-group">
-                            <div class="col-md-8 col-md-offset-4">
-                                <button type="submit" class="btn btn-primary">
-                                    Login
-                                </button>
-
-                                <a class="btn btn-link" href="{{ route('password.request') }}">
-                                    Forgot Your Password?
-                                </a>
-                            </div>
+                        <div class="row">
+                            <input type="submit" value="Submit" class="btn">
                         </div>
                     </form>
+                </div>
+                <div class="row">
+               <!--     <p>Don't have an account? <a href="#">Register Here</a></p>-->
                 </div>
             </div>
         </div>
     </div>
 </div>
-@endsection
+<!-- Footer -->
+<div class="container-fluid text-center footer">
+    <p>by <a href="https://wwww.facebook.com/taki729">Taki.</a></p>
+</div>
+</body>
+</html>

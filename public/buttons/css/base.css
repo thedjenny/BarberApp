@@ -70,9 +70,12 @@ a:hover {
 	outline: dashed;
 }
 h1 {
-	font-size: 80px;
+	font-size: revert;
 	text-align: center;
+	font-family: system-ui;
+	background-color: #eeb28a9c;
 }
+
 
 a {
 	text-align: center;

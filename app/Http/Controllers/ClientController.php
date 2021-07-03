@@ -7,11 +7,15 @@ use Illuminate\Http\Request;
 use App\Client;
 use App\Rdv;
 use DB;
-use \App\Http\Controllers\BotController;
-use MongoDB\Driver\Session;
+use App\Http\Controllers\BotController;
+use function Sodium\add;
+
 
 class ClientController extends Controller
 {
+    public function __construct()
+    {
+    }
 
     //traitement RDVS
    public function workTime($param , $begin )
@@ -21,28 +25,52 @@ class ClientController extends Controller
             $StartTime    = strtotime ("10:00");
         else
             $StartTime    = strtotime ($begin);
-        //Get Timestamp
+
         $EndTime      = strtotime ("20:00");
         $lunchTime = strtotime("13:00");
         $backTime = strtotime("14:00");
-        $AddMins  = $param * 60;
-
+        $AddMins = $param * 60;
+        $next = strtotime("00:00");
     
         while ($StartTime < $lunchTime) //Run loop
         {
-            $CompletTime[] = date ("G:i", $StartTime);
-            $StartTime = $StartTime + $AddMins; //Endtime check
+            $next = $StartTime + $AddMins;
+            if($next<=$lunchTime){
+                $CompletTime[] = date ("G:i", $StartTime);
+            }
+
+            $StartTime = $StartTime + $AddMins;
         }
 
+
         if($backTime>$StartTime){
+
             while($backTime<$EndTime){
-                $CompletTime[] = date ("G:i", $backTime);
+                $next = $backTime + $AddMins;
+
+                if($next<=$EndTime){
+                    $CompletTime[] = date ("G:i", $backTime);
+                }
+
                 $backTime = $backTime + $AddMins; //Endtime check
+            }
+        }else{
+
+            while($StartTime<$EndTime){
+                    $next = $StartTime + $AddMins;
+                    if($next<=$EndTime){
+                        $CompletTime[] = date ("G:i", $StartTime);
+                    }
+
+                    $StartTime = $StartTime + $AddMins;
+
+
+                //Endtime check
             }
         }
        
         
-      
+
        return($CompletTime);
         
     }
@@ -72,10 +100,11 @@ class ClientController extends Controller
         $takenCr = [];
         $del = [];
         $exist = false;
+
         switch ($day){
             case "0":{
                 $mytime = Carbon::now();
-               $date = $mytime->toDateString();
+                $date = $mytime->toDateString();
             }break;
             case "1":{
                 $tomorrow = Carbon::tomorrow();
@@ -91,46 +120,66 @@ class ClientController extends Controller
         }
 
         if($day == "0"){
+
+            $min = Carbon::now()->minute;
+            $beg = Carbon::now();
+
+           switch ($min){
+                case ($min > 0 && $min<=15) :
+                    $beg->addMinutes(15-$min);break;
+                case ($min>15 && $min<=30):
+                    $beg->addMinutes(30-$min);break;
+                case($min>30 && $min<=45):
+                    $beg->addMinutes(45-$min);break;
+               case($min>45 && $min<60):
+                   $beg->addMinutes(60-$min);break;
+               default : $beg;
+
+            }
+
             switch($type){
 
                 case "1":{
                     $coiffure = "degrade";
-                    $creno = $this->workTime(30,Carbon::now()->format("H:i"));
+                    $creno = $this->workTime(30,$beg->format("H:i"));
+
                 }break;
 
                 case "2":{
                     $coiffure = "lisseur+coiffure";
-                    $creno = $this->workTime(45,Carbon::now()->format("H:i"));
+                    $creno = $this->workTime(45,$beg->format("H:i"));
                 }break;
 
                 case "3":{
                     $coiffure = "degrade + kiratin";
-                    $creno = $this->workTime(60,Carbon::now()->format("H:i"));
+                    $creno = $this->workTime(60,$beg->format("H:i"));
                 }break;
 
                 case "4":{
                     $coiffure = "barbe";
-                    $creno = $this->workTime(15,Carbon::now()->format("H:i"));
+                    $creno = $this->workTime(15,$beg->format("H:i"));
                 }break;
 
                 case "5" :{
                     $coiffure = "kiratin simple";
-                    $creno = $this->workTime(60,Carbon::now()->format("H:i"));
+                    $creno = $this->workTime(60,$beg->format("H:i"));
                 }break;
 
                 case "6":{
                     $coiffure = "VIP";
-                    $creno = $this->workTime(90,Carbon::now()->format("H:i"));
+                    $creno = $this->workTime(90,$beg->format("H:i"));
+
                 }break;
 
                 case "7":{
                     $coiffure = "Lisseur/Sechoir";
-                    $creno = $this->workTime(15,Carbon::now()->format("H:i"));
+                    $creno = $this->workTime(15,$beg->format("H:i"));
                 }break;
 
                 default: {
                     return view('error');
                 }
+
 
             }
         }else
@@ -139,6 +188,7 @@ class ClientController extends Controller
                 case "1":{
                     $coiffure = "degrade";
                             $creno = $this->workTime(30,null);
+
                         }break;
 
                         case "2":{
@@ -240,50 +290,50 @@ class ClientController extends Controller
 
         $creno [] = array();
         $coiffure = "";
-        $points = $user->points;
+       // $points = $user->points;
 
 
         switch($type){
 
             case "1":{
                 $coiffure = "degrade";
-                $points = $points + 30;
+               // $points = $points + 30;
                 $creno = $this->timeSpliter($beg,30);
             }break;
             
             case "2":{
                 $coiffure = "lisseur+coiffure";
-                $points = $points + 40;
+               // $points = $points + 40;
                 $creno = $this->timeSpliter($beg,45);
             }break;
 
             case "3":{
                 $coiffure = "degrade + kiratin";
-                $points = $points + 100;
+              //  $points = $points + 100;
                 $creno = $this->timeSpliter($beg,60);
             }break;
             
             case "4":{
                 $coiffure = "barbe";
-                $points = $points + 10;
+              //  $points = $points + 10;
                 $creno = $this->timeSpliter($beg,15);
             }break;
 
             case "5" :{
                 $coiffure = "kiratin simple";
-                $points = $points + 80;
+               // $points = $points + 80;
                 $creno = $this->timeSpliter($beg,60);
             }break;
 
             case "6":{
                 $coiffure = "VIP";
-                $points = $points + 150;
+              //  $points = $points + 150;
                 $creno = $this->timeSpliter($beg,90);
             }break;
 
             case "7":{
                 $coiffure = "Lisseur/Sechoir";
-                $points = $points + 15;
+              //  $points = $points + 15;
                 $creno = $this->timeSpliter($beg,15);
             }break;
 
@@ -292,11 +342,11 @@ class ClientController extends Controller
             }
             
         }
-
+/*
         Client::where('idClient','=', $id)
             ->update([
                 'points' => $points
-            ]);
+            ]);*/
 
         
         foreach($creno as $cr){
@@ -312,7 +362,7 @@ class ClientController extends Controller
 
         $mycreno = $creno[0];
 
-        $bot->sendTextMessage($id,"مبروك لقد تم حجز موعدك بنجاح");
+       $bot->sendTextMessage($id,"مبروك لقد تم حجز موعدك بنجاح");
         $bot->handlePostBack($id,"myrdv");
         return redirect(route('myrdv',$id));
 //         return view('users.myrdv')->with('data',[
@@ -321,7 +371,11 @@ class ClientController extends Controller
 
     }
 
-    
+
+    public function getParams(){
+       $params = DB::select('select H_debut,H_pause,H_retour,H_fin from settings');
+       return $params;
+    }
 
     public function myRdv($id)
     {
@@ -392,4 +446,6 @@ class ClientController extends Controller
         return redirect()->back();
 
     }
+
+
 }

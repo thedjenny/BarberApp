@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Admin;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
 
@@ -27,7 +28,7 @@ class RegisterController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/home';
+    protected $redirectTo = '/login';
 
     /**
      * Create a new controller instance.
@@ -36,7 +37,7 @@ class RegisterController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('guest');
+        $this->middleware('auth');
     }
 
     /**
@@ -48,10 +49,9 @@ class RegisterController extends Controller
     protected function validator(array $data)
     {
         return Validator::make($data, [
-            'nom' => 'required|string|max:255',
-            'prenom'=>'string',
-            'tel' => 'required|string|max:255|unique:admins',
-            'password' => 'required|string|min:6|confirmed',
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'max:255', 'unique:admins'],
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
     }
 
@@ -59,15 +59,15 @@ class RegisterController extends Controller
      * Create a new user instance after a valid registration.
      *
      * @param  array  $data
-     * @return User
+     * @return \App\User
      */
     protected function create(array $data)
     {
         return Admin::create([
-            'nom' => $data['nom'],
-            'prenom' => $data['prenom'],
-            'tel' => $data['tel'],
-            'password' => bcrypt($data['password']),
+            'nom' => $data['name'],
+            'prenom'=>$data['prenom'],
+            'email' => $data['email'],
+            'password' => Hash::make($data['password']),
         ]);
     }
 }

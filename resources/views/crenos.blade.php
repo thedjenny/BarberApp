@@ -12,7 +12,9 @@
 
 
         <!-- Styles -->
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
         <link href="{{ asset('buttons/css/base.css') }}" rel="stylesheet">
+
 
         <style>
             html, body {
@@ -22,9 +24,16 @@
                 font-weight: 100;
                 height: 100vh;
                 margin: 0;
-                background-image:url({{url('bg-img/imag.jpg')}});
+            }
+            .parallax {
+                /* The image used */
+                background-image: url({{url('bg-img/imag2.jpg')}});
 
-                /* Center and scale the image nicely */
+                /* Set a specific height */
+                min-height: 500px;
+
+                /* Create the parallax scrolling effect */
+                background-attachment: fixed;
                 background-position: center;
                 background-repeat: no-repeat;
                 background-size: cover;
@@ -111,15 +120,18 @@
        
     </head>
     <body>
-    <div class="backgd">
+    <div class="parallax">
     <div class="incontent">
         <div>
-            @if($data['exist'])
+            @if(count($data["crns"])==0)
+                <h1 align="center">عفوا كل المواعيد محجوزة</h1>
+            @elseif($data['exist'])
 
                     <h1 align="center">عفوا لا يمكنك حجز أكثر من موعد</h1>
                     <a href="{{route('myrdv',['id'=>$data["id"]])}}">اضغط هنا لتصفح موعدك القادم</a>
             @else
-                <h1 align="center"> مرحبا بك  الرجاء اختيار الموعد وتاكيده</h1><br>
+                <div class="h1container">
+                <h1 align="center"> مرحبا بك  الرجاء اختيار الموعد وتاكيده</h1><br></div><br>
                 <ol class="content">
                     @foreach($data["crns"] as $crn)
                         <form method="post" action="{{route('reserver')}}" onsubmit="return confirm(' تأكيد اختيار موعدك يوم {{$data["date"]}} على الساعة {{$crn}}');">
