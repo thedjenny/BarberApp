@@ -462,7 +462,7 @@ class BotController extends Controller
 
 
     public function sendTest($reciepientId){
-        $attachment_url = "https://www.barbededarwin.fr/wp-content/uploads/2020/11/degrade-progressif-2-1200x900.jpg";
+        $attachment_url = "https://platform-lookaside.fbsbx.com/platform/profilepic/?psid=5126822450667031&width=1024&ext=1626563812&hash=AeRABwtyfLZklmDc1a4";
         $messageData = [
             "recipient" => [
                 "id" => $reciepientId,
@@ -494,7 +494,7 @@ class BotController extends Controller
 
         //dd($messageData);
 
-        $ch = curl_init('https://graph.facebook.com/v6.0/me/messages?access_token=' . env("PAGE_ACCESS_TOKEN"));
+        $ch = curl_init('https://graph.facebook.com/v11.0/me/messages?access_token=' . env("PAGE_ACCESS_TOKEN"));
         // curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         // curl_setopt($ch, CURLOPT_HEADER, false);
         curl_setopt($ch, CURLOPT_HTTPHEADER, ["Content-Type: application/json"]);
