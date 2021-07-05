@@ -43,9 +43,9 @@ class BotController extends Controller
             $command = $msg["postback"]["payload"];
             $this->sendSeen($id);
             $this->sendTypingOn($id);
-            $this->handlePostBack($id, $command);
+            $this->sendTest($id);
 
-           // $this->sendTextMessage($id,"hi");
+            $this->sendTextMessage($id,"hi");
         }
 
     }
