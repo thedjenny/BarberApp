@@ -43,7 +43,7 @@ class BotController extends Controller
             $command = $msg["postback"]["payload"];
             $this->sendSeen($id);
             $this->sendTypingOn($id);
-            $this->sendTest($id);
+            $this->sendAttachmentMessage($id);
 
             $this->sendTextMessage($id,"hi");
         }
@@ -449,7 +449,7 @@ class BotController extends Controller
 
         //dd($messageData);
 
-        $ch = curl_init('https://graph.facebook.com/v6.0/me/messages?access_token=' . env("PAGE_ACCESS_TOKEN"));
+        $ch = curl_init('https://graph.facebook.com/v11.0/me/messages?access_token=' . env("PAGE_ACCESS_TOKEN"));
         // curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         // curl_setopt($ch, CURLOPT_HEADER, false);
         curl_setopt($ch, CURLOPT_HTTPHEADER, ["Content-Type: application/json"]);
@@ -504,6 +504,9 @@ class BotController extends Controller
         curl_close($ch);
     }
 
+    public function sendTestAtt($recipientId){
+
+    }
     public function send3Days($recipientId)
     {
 
