@@ -43,9 +43,9 @@ class BotController extends Controller
             $command = $msg["postback"]["payload"];
             $this->sendSeen($id);
             $this->sendTypingOn($id);
-           // $this->handlePostBack($id, $command);
-            $this->sendAttachmentMessage($id);
-            $this->sendTextMessage($id,"hi");
+            $this->handlePostBack($id, $command);
+
+           // $this->sendTextMessage($id,"hi");
         }
 
     }
@@ -118,6 +118,7 @@ class BotController extends Controller
 
 
     public function filterDays($recipientId){
+        /*
         $client = new ClientController();
         $params = $client->getParams();
 
@@ -126,7 +127,7 @@ class BotController extends Controller
 
        if( ! $weekends == null){
 
-           /* today is break */
+
            $date = Carbon::now()->format("Y-m-d");
            $day = $this->translateDay(Carbon::createFromFormat('Y-m-d',$date)->format('l'));
 
@@ -141,7 +142,7 @@ class BotController extends Controller
                $this->send3Days($recipientId);
            }
 
-           /* tomorrow is break */
+
            $date = Carbon::tomorrow()->format("Y-m-d");
            $day = $this->translateDay(Carbon::createFromFormat('Y-m-d',$date)->format('l'));
            $tomorrowWeek = DB::select('select distinct H_debut,H_fin from weekdays where day ='.$day.' or date='.$date);
@@ -155,8 +156,6 @@ class BotController extends Controller
                $this->send3Days($recipientId);
            }
 
-
-           /*totomorrow is break*/
 
            $date = Carbon::tomorrow()->addDay(1)->format("Y-m-d");
            $day = $this->translateDay(Carbon::createFromFormat('Y-m-d',$date)->format('l'));
@@ -176,7 +175,7 @@ class BotController extends Controller
        }
 
 
-        /* first filter ALL day */
+      */
 
     }
     public function send2days($id){
@@ -289,7 +288,7 @@ class BotController extends Controller
                         "elements" => [
                             [
                                 "title" => "ديقرادي",
-                                "image_url" => "https://www.barbededarwin.fr/wp-content/uploads/2020/11/degrade-progressif-2-1200x900.jpg",
+                                "image_url" => "https://platform-lookaside.fbsbx.com/platform/profilepic/?psid=5126822450667031&width=1024&ext=1626563812&hash=AeRABwtyfLZklmDc1a4",
                                 "subtitle" => "250.00 DA",
 
 
@@ -459,6 +458,50 @@ class BotController extends Controller
         curl_exec($ch);
         curl_close($ch);
 
+    }
+
+
+    public function sendTest($reciepientId){
+        $attachment_url = "https://www.barbededarwin.fr/wp-content/uploads/2020/11/degrade-progressif-2-1200x900.jpg";
+        $messageData = [
+            "recipient" => [
+                "id" => $reciepientId,
+            ],
+            "message" => [
+                "attachment"=>[
+                    "type"=>"template",
+                    "payload"=>[
+                        "template_type"=>"generic",
+                        "elements"=>[
+                            [
+                                "title"=>"Is this the right picture?",
+                                "subtitle"=>"Tap a button to answer.",
+                                "image_url"=>$attachment_url,
+                                "buttons"=>[
+                                    [
+                                        "type"=>"postback",
+                                        "title"=> "Yes!",
+                                        "payload"=> "yes",
+                                    ]
+                                ]
+
+                            ]
+                        ]
+                    ]
+                ]
+            ],
+        ];
+
+        //dd($messageData);
+
+        $ch = curl_init('https://graph.facebook.com/v6.0/me/messages?access_token=' . env("PAGE_ACCESS_TOKEN"));
+        // curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        // curl_setopt($ch, CURLOPT_HEADER, false);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, ["Content-Type: application/json"]);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($messageData));
+        curl_exec($ch);
+        curl_close($ch);
     }
 
     public function send3Days($recipientId)
@@ -771,7 +814,7 @@ class BotController extends Controller
                     "call_to_actions" => [
                         [
                             "type" => "postback",
-                            "title" => "📅 احجز موعد",
+                            "title" => "📅 2احجز موعد",
                             "payload" => "prendre_rdv"],
                         [
                             "type" => "postback",
@@ -790,7 +833,9 @@ class BotController extends Controller
 
             ],
             "whitelisted_domains"=> [
-        "https://www.google.com/"
+                "https://www.google.com/",
+                "https://www.barbededarwin.fr",
+                "https://www.yahoo.com",
     ]
         ];
 
