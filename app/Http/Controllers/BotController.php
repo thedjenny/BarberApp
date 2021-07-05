@@ -294,7 +294,7 @@ class BotController extends Controller
 
                                 "default_action" => [
                                     "type" => "web_url",
-                                    "url" => "https://bit.ly/subscribe-haryphamdev",
+                                    "url" => "https://tikbarber.herokuapp.com",
                                     "messenger_extensions" => true,
                                     "webview_height_ratio" => "tall"
                                 ],
