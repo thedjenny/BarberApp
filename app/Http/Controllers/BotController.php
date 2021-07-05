@@ -288,13 +288,13 @@ class BotController extends Controller
                         "elements" => [
                             [
                                 "title" => "ديقرادي",
-                                "image_url" => "https://platform-lookaside.fbsbx.com/platform/profilepic/?psid=5126822450667031&width=1024&ext=1626563812&hash=AeRABwtyfLZklmDc1a4",
+                                "image_url" => "https://tikbarber.herokuapp.com/img.jpg",
                                 "subtitle" => "250.00 DA",
 
 
                                 "default_action" => [
                                     "type" => "web_url",
-                                    "url" => "https://platform-lookaside.fbsbx.com/platform/profilepic/?psid=5126822450667031&width=1024&ext=1626563812&hash=AeRABwtyfLZklmDc1a4",
+                                    "url" => "https://tikbarber.herokuapp.com",
                                     "messenger_extensions" => true,
                                     "webview_height_ratio" => "tall"
                                 ],
@@ -303,7 +303,7 @@ class BotController extends Controller
                                     [
                                         "title" => "احجز موعد الان",
                                         "type" => "web_url",
-                                        "url" => "https://platform-lookaside.fbsbx.com/platform/profilepic/?psid=5126822450667031&width=1024&ext=1626563812&hash=AeRABwtyfLZklmDc1a4",
+                                        "url" => "https://tikbarber.herokuapp.com",
                                         "webview_height_ratio" => "tall"
                                     ],
                                 ],
