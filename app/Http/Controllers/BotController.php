@@ -462,7 +462,7 @@ class BotController extends Controller
 
 
     public function sendTest($reciepientId){
-        $attachment_url = "https://platform-lookaside.fbsbx.com/platform/profilepic/?psid=5126822450667031&width=1024&ext=1626563812&hash=AeRABwtyfLZklmDc1a4";
+        $attachment_url = "https://tikbarber.herokuapp.com/img.jpg";
         $messageData = [
             "recipient" => [
                 "id" => $reciepientId,
@@ -810,11 +810,11 @@ class BotController extends Controller
             "persistent_menu" => [
                 [
                     "locale" => "default",
-                    "composer_input_disabled" => true,
+                    "composer_input_disabled" => false,
                     "call_to_actions" => [
                         [
                             "type" => "postback",
-                            "title" => "📅 2احجز موعد",
+                            "title" => "📅 22احجز موعد",
                             "payload" => "prendre_rdv"],
                         [
                             "type" => "postback",
@@ -836,6 +836,7 @@ class BotController extends Controller
                 "https://www.google.com/",
                 "https://www.barbededarwin.fr",
                 "https://www.yahoo.com",
+                "https://tikbarber.herokuapp.com"
     ]
         ];
 
