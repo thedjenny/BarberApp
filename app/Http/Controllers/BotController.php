@@ -43,7 +43,7 @@ class BotController extends Controller
             $command = $msg["postback"]["payload"];
             $this->sendSeen($id);
             $this->sendTypingOn($id);
-            $this->sendTest($id);
+            $this->sendAttachmentMessage($id);
 
             $this->sendTextMessage($id,"hi");
         }
@@ -294,7 +294,7 @@ class BotController extends Controller
 
                                 "default_action" => [
                                     "type" => "web_url",
-                                    "url" => "https://tikbarber.herokuapp.com",
+                                    "url" => "https://platform-lookaside.fbsbx.com/platform/profilepic/?psid=5126822450667031&width=1024&ext=1626563812&hash=AeRABwtyfLZklmDc1a4",
                                     "messenger_extensions" => true,
                                     "webview_height_ratio" => "tall"
                                 ],
@@ -303,7 +303,7 @@ class BotController extends Controller
                                     [
                                         "title" => "احجز موعد الان",
                                         "type" => "web_url",
-                                        "url" => "https://www.google.com/",
+                                        "url" => "https://platform-lookaside.fbsbx.com/platform/profilepic/?psid=5126822450667031&width=1024&ext=1626563812&hash=AeRABwtyfLZklmDc1a4",
                                         "webview_height_ratio" => "tall"
                                     ],
                                 ],
