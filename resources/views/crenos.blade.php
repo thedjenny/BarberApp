@@ -5,8 +5,8 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>Crenos</title>
-
+        <title>Barber Vintage -Crenaux</title>
+          <link rel="icon" type="image/png" sizes="16x16" href="{{asset('/template/admin/assets/images/favicon1.png')}}">
         <!-- Fonts -->
         <link href="https://fonts.googleapis.com/css?family=Raleway:100,600" rel="stylesheet" type="text/css">
 
@@ -16,6 +16,16 @@
         <link href="{{ asset('buttons/css/base.css') }}" rel="stylesheet">
 
 
+        <script>
+            (function(d, s, id){
+                var js, fjs = d.getElementsByTagName(s)[0];
+                if (d.getElementById(id)) {return;}
+                js = d.createElement(s); js.id = id;
+                js.src = "//connect.facebook.net/en_US/messenger.Extensions.js";
+                fjs.parentNode.insertBefore(js, fjs);
+            }(document, 'script', 'Messenger'));
+
+        </script>
         <style>
             html, body {
                 background-color: #fff;
@@ -123,7 +133,9 @@
     <div class="parallax">
     <div class="incontent">
         <div>
-            @if(count($data["crns"])==0)
+            @if($data["isOff"])
+                <h1 align="center">عفوا لا يوجد مواعيد اليوم لعطلة أو سبب طارئ</h1>
+            @elseif(count($data["crns"])==0)
                 <h1 align="center">عفوا كل المواعيد محجوزة</h1>
             @elseif($data['exist'])
 

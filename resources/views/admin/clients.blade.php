@@ -10,8 +10,8 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <!-- Favicon icon -->
-    <link rel="icon" type="image/png" sizes="16x16" href="{{asset('/template/admin/assets/images/favicon.ico')}}">
-    <title>Taki Barbershop</title>
+    <link rel="icon" type="image/png" sizes="16x16" href="{{asset('/template/admin/assets/images/favicon1.png')}}">
+    <title>Barber Vintage - Clients</title>
     <!-- Custom CSS -->
     <link href="{{asset('/template/admin/assets/libs/magnific-popup/dist/magnific-popup.css')}}" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="{{asset('/template/admin/assets/extra-libs/multicheck/multicheck.css')}}">
@@ -72,7 +72,7 @@
                     <!-- ============================================================== -->
                     <!-- Logo -->
                     <!-- ============================================================== -->
-                    <a class="navbar-brand" href="index.html">
+                    <a class="navbar-brand" href="{{route('home')}}">
                         <!-- Logo icon -->
                         <b class="logo-icon p-l-10">
                             <!--You can put here icon as well // <i class="wi wi-sunset"></i> //-->
@@ -201,6 +201,7 @@
                         <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link" href="{{route('adminSetting')}}" aria-expanded="false"><i class="mdi mdi-pause-circle"></i><span class="hide-menu">Weekends</span></a></li>
 
                         <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link" href="{{route('editworkday')}}" aria-expanded="false"><i class="fas fa-stopwatch"></i><span class="hide-menu">Modifier journee libre</span></a></li>
+                        <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link" href="{{route('getCoiffures')}}" aria-expanded="false"><i class="fas fa-cut"></i><span class="hide-menu">Liste des coiffures</span></a></li>
                         <li class="sidebar-item"> <a class="sidebar-link has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false"><i class="mdi mdi-account-key"></i><span class="hide-menu">Administrateur </span></a>
                             <ul aria-expanded="false" class="collapse  first-level">
                                 <li class="sidebar-item"><a href="{{route('registerAdmin')}}" class="sidebar-link"><i class="mdi mdi-account-settings-variant"></i><span class="hide-menu"> Ajouter admin </span></a></li>
@@ -223,18 +224,65 @@
             <div class="page-breadcrumb">
                 <div class="row">
                     <div class="col-12 d-flex no-block align-items-center">
-                        <h4 class="page-title">Barbershop : Nos clients</h4>
+                        <h4 class="page-title">Barber Constantine : Nos clients</h4>
                         <div class="ml-auto text-right">
-                            <nav aria-label="breadcrumb">
-                                <ol class="breadcrumb">
-                                    <li class="breadcrumb-item"><a href="#">Home</a></li>
-                                    <li class="breadcrumb-item active" aria-current="page">Library</li>
-                                </ol>
-                            </nav>
                         </div>
                     </div>
                 </div>
+                <br>
+                <div class="row">
+                    <div class="col-12 d-flex no-block align-items-center">
+                        <button class="btn btn-success" data-toggle="modal" data-target="#AjoutModal">Ajouter nouveau client</button>
+                    </div>
+                </div>
             </div>
+
+            <div class="modal fade" id="AjoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Ajouter rendez-vous Offline</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Annuler">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <form method="post" action="{{route('addClientOffline')}}" enctype="multipart/form-data">
+                            <div class="card">
+                                <div class="card-body">
+
+                                    <div class="form-group row">
+                                        <label class="col-md-3" for="disabledTextInput">Nom d'utilisateur</label>
+                                        <div class="col-md-9">
+                                            <input type="text" id="disabledTextInput" class="form-control" name="username" placeholder="Doe" required>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <label class="col-md-3" for="points">Points</label>
+                                        <div class="col-md-9">
+                                            <input type="number" id="points" name="points" class="form-control" placeholder="10" required>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <div class="col-md-9">
+                                            <label class="col-md-3">Photo coiffeur</label>
+                                            <input type="file" name="image" class="form-control" id="image" required>
+                                        </div>
+                                    </div>
+
+
+                                </div>
+                                <div class="border-top">
+                                    <div class="card-body">
+                                        <input type="submit" class="btn btn-primary"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </form> </div>
+                </div>
+            </div>
+
             <!-- ============================================================== -->
             <!-- End Bread crumb and right sidebar toggle -->
             <!-- ============================================================== -->
@@ -270,10 +318,10 @@
                                                     <div class="row el-element-overlay">
                                                         <div class="card">
                                                             <div class="el-card-item">
-                                                                <div class="el-card-avatar el-overlay-1">  <img src="{{$c->profile_picture}} " />
+                                                                <div class="el-card-avatar el-overlay-1">  <img src="{{ asset('storage/product/'.$c->profile_picture) }}" />
                                                                     <div class="el-overlay">
                                                                         <ul class="list-style-none el-info">
-                                                                            <li class="el-item"><a class="btn default btn-outline image-popup-vertical-fit el-link" href=" {{$c->profile_picture}} "><i class="mdi mdi-magnify-plus"></i></a></li>
+                                                                            <li class="el-item"><a class="btn default btn-outline image-popup-vertical-fit el-link" href=" {{ asset('storage/product/'.$c->profile_picture) }} "><i class="mdi mdi-magnify-plus"></i></a></li>
                                                                         </ul>
                                                                     </div>
                                                                 </div>
@@ -296,12 +344,22 @@
                                                     <button type="submit" class="btn btn btn-success">
                                                         {{ __('Débloquer') }}
                                                     </button></form>
+                                                <form method="post" action="{{route('deleteClient')}}">
+                                                    <input type="hidden" name="idClient" value="{{$c->idClient}}">
+                                                    <button type="submit" class="btn btn btn-primary">
+                                                        <i class="mdi mdi-delete-forever font-24"></i>
+                                                    </button></form>
                                                 @else
                                                     <form method="post" action="{{route('bloquerClient')}}">
                                                     <input type="hidden" name="idClient" value="{{$c->idClient}}">
                                                 <button type="submit" class="btn btn btn-danger">
                                                     {{ __('Bloquer') }}
                                                 </button></form>
+                                                    <form method="post" action="{{route('deleteClient')}}">
+                                                        <input type="hidden" name="idClient" value="{{$c->idClient}}">
+                                                        <button type="submit" class="btn btn btn-primary">
+                                                            <i class="mdi mdi-delete-forever font-24"></i>
+                                                        </button></form>
                                                 @endif
 
                                                 <!-- Modal popsup -->

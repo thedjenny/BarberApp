@@ -6,8 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 
-    <title>Crenos</title>
-
+    <title>Barber Vintage - Espace Client</title>
+      <link rel="icon" type="image/png" sizes="16x16" href="{{asset('/template/admin/assets/images/favicon1.png')}}">
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css?family=Raleway:100,600" rel="stylesheet" type="text/css">
 
@@ -32,6 +32,15 @@
             font-size: 13px;
             font-weight: bold;
             color: #000;
+        }
+
+        h3{
+            font-family: system-ui !important;
+            margin: auto !important;
+        }
+        h4{
+            font-family: system-ui !important;
+            margin: auto !important;
         }
     </style>
 
@@ -61,9 +70,8 @@
 
                 <img src="{{$data['user']['profile_picture']}}" class="img-fluid">
                 <div class="profile-content">
-                    <div class="profile-name">{{$data['user']['username']}}
+                    <div class="profile-name">@ {{$data['user']['username']}}
                     </div>
-                    <div class="profile-description">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor.</div>
                     <div class="row">
                         <h3> مرحبا بك عزيزي الزبون</h3>
                     </div><hr>
@@ -81,13 +89,13 @@
                     </div><hr>
                     @if($data['bool'])
                     <div class="row">
-                        <h4> {{$data['rdv']['time']}} لديك موعد للحلاقة بتاريخ  {{$data['rdv']['date']}} على الساعة </h4>
+                        <h4> {{$data['rdv']->time}} لديك موعد للحلاقة بتاريخ  {{$data['rdv']->date}} على الساعة </h4>
                     </div><hr>
                     <div class="row">
                         <div class="col-xs-12">
                             <form method="post" action="{{route('cancelrdv')}}" onsubmit="return confirm(' تأكيد الغاء الموعد');">
                                 <input type="hidden" name="id" value="{{$data['user']['idClient']}}"/>
-                                <input type="hidden" name="date" value="{{$data['rdv']['date']}}"/>
+                                <input type="hidden" name="date" value="{{$data['rdv']->date}}"/>
                                 <input type="hidden" name="ps" value="{{$data['user']['points']}}"/>
                                 <button type="submit" class="btns btn-dgr"><span>الغاء الموعد</span></button>
                             </form>

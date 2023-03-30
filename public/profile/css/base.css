@@ -114,6 +114,7 @@ body {
     font-size: 18px;
     font-weight: bold;
     color: #021830;
+
 }
 
 .btn-dgr {
@@ -316,7 +317,10 @@ body {
     right: 0px;
     top: -70px;
     color: #FFF;
-    font-size: 17px;
+    font-size: 35px;
+    -webkit-text-stroke: #c1b55d;
+    -webkit-text-stroke-color: #5a3203;
+    -webkit-text-stroke-width: thin;
 }
 
 .profile-card-4 .profile-name p {

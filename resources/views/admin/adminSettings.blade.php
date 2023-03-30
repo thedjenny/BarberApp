@@ -11,8 +11,8 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <!-- Favicon icon -->
-    <link rel="icon" type="image/png" sizes="16x16" href="{{asset('/template/admin/assets/images/favicon.ico')}}">
-    <title>Taki Barbershop -Administrateur</title>
+    <link rel="icon" type="image/png" sizes="16x16" href="{{asset('/template/admin/assets/images/favicon1.png')}}">
+    <title>Barber vintage -Administrateur</title>
     <!-- Custom CSS -->
     <link rel="stylesheet" type="text/css" href="{{asset('/template/admin/assets/libs/select2/dist/css/select2.min.css')}}">
     <link rel="stylesheet" type="text/css" href="{{asset('/template/admin/assets/libs/jquery-minicolors/jquery.minicolors.css')}}">
@@ -52,7 +52,7 @@
                 <!-- ============================================================== -->
                 <!-- Logo -->
                 <!-- ============================================================== -->
-                <a class="navbar-brand" href="index.html">
+                <a class="navbar-brand" href="{{route('home')}}">
                     <!-- Logo icon -->
                     <b class="logo-icon p-l-10">
                         <!--You can put here icon as well // <i class="wi wi-sunset"></i> //-->
@@ -181,6 +181,7 @@
                     <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link" href="{{route('adminSetting')}}" aria-expanded="false"><i class="mdi mdi-pause-circle"></i><span class="hide-menu">Weekends</span></a></li>
 
                     <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link" href="{{route('editworkday')}}" aria-expanded="false"><i class="fas fa-stopwatch"></i><span class="hide-menu">Modifier journee libre</span></a></li>
+                    <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link" href="{{route('getCoiffures')}}" aria-expanded="false"><i class="fas fa-cut"></i><span class="hide-menu">Liste des coiffures</span></a></li>
                     <li class="sidebar-item"> <a class="sidebar-link has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false"><i class="mdi mdi-account-key"></i><span class="hide-menu">Administrateur </span></a>
                         <ul aria-expanded="false" class="collapse  first-level">
                             <li class="sidebar-item"><a href="{{route('registerAdmin')}}" class="sidebar-link"><i class="mdi mdi-account-settings-variant"></i><span class="hide-menu"> Ajouter admin </span></a></li>
@@ -203,12 +204,11 @@
     <div class="page-breadcrumb">
         <div class="row">
             <div class="col-12 d-flex no-block align-items-center">
-                <h4 class="page-title">Barbershop: Weekends</h4>
+                <h4 class="page-title">Barber Constantine: Weekends</h4>
                 <div class="ml-auto text-right">
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="#">Home</a></li>
-                            <li class="breadcrumb-item active" aria-current="page">Library</li>
+
                         </ol>
                     </nav>
                 </div>
@@ -306,7 +306,7 @@
     <!-- footer -->
     <!-- ============================================================== -->
     <footer class="footer text-center">
-        All Rights Reserved by Matrix-admin. Designed and Developed by <a href="https://wrappixel.com">WrapPixel</a>.
+        Developpé par  <a href="https://facebook.com/taki729">Taki eddine Seghiri</a>.
     </footer>
     <!-- ============================================================== -->
     <!-- End footer -->

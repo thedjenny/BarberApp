@@ -10,8 +10,8 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <!-- Favicon icon -->
-    <link rel="icon" type="image/png" sizes="16x16" href="{{asset('/template/admin/assets/images/favicon.ico')}}">
-    <title>Taki Barbershop -Admins</title>
+    <link rel="icon" type="image/png" sizes="16x16" href="{{asset('/template/admin/assets/images/favicon1.png')}}">
+    <title>Barber vintage-Admins</title>
     <!-- Custom CSS -->
     <link href="{{asset('/template/admin/assets/libs/magnific-popup/dist/magnific-popup.css')}}" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="{{asset('/template/admin/assets/extra-libs/multicheck/multicheck.css')}}">
@@ -23,6 +23,7 @@
             max-height: 100%;
             display: block; /* remove extra space below image */
         }
+
 
 
     </style>
@@ -188,6 +189,7 @@
                     <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link" href="{{route('adminSetting')}}" aria-expanded="false"><i class="mdi mdi-pause-circle"></i><span class="hide-menu">Weekends</span></a></li>
 
                     <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link" href="{{route('editworkday')}}" aria-expanded="false"><i class="fas fa-stopwatch"></i><span class="hide-menu">Modifier journee libre</span></a></li>
+                    <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link" href="{{route('getCoiffures')}}" aria-expanded="false"><i class="fas fa-cut"></i><span class="hide-menu">Liste des coiffures</span></a></li>
                     <li class="sidebar-item"> <a class="sidebar-link has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false"><i class="mdi mdi-account-key"></i><span class="hide-menu">Administrateur </span></a>
                         <ul aria-expanded="false" class="collapse  first-level">
                             <li class="sidebar-item"><a href="{{route('registerAdmin')}}" class="sidebar-link"><i class="mdi mdi-account-settings-variant"></i><span class="hide-menu"> Ajouter admin </span></a></li>
@@ -210,15 +212,7 @@
         <div class="page-breadcrumb">
             <div class="row">
                 <div class="col-12 d-flex no-block align-items-center">
-                    <h4 class="page-title">Barbershop : Nos Admins</h4>
-                    <div class="ml-auto text-right">
-                        <nav aria-label="breadcrumb">
-                            <ol class="breadcrumb">
-                                <li class="breadcrumb-item"><a href="#">Home</a></li>
-                                <li class="breadcrumb-item active" aria-current="page">Library</li>
-                            </ol>
-                        </nav>
-                    </div>
+                    <h4 class="page-title">Barber vintage : Nos Admins</h4>
                 </div>
             </div>
         </div>
@@ -238,37 +232,42 @@
                     <div class="card">
                         <div class="card-body">
                             <h5 class="card-title m-b-0">Liste des administrateurs</h5>
+                         <div class="table-responsive">
+                            <table id="zero_config" class="table table-striped table-bordered">
+                                <thead>
+                                <tr>
+                                    <th scope="col">N°</th>
+                                    <th scope="col">Nom</th>
+                                    <th scope="col">Prenom</th>
+                                    <th scope="col">N° Tel</th>
+                                    <th scope="col"></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                @for($i = 0; $i<sizeof($admins); $i ++ )
+                                    <tr><form action="{{route('deleteAdmin')}}" method="post" onsubmit="confirm('Confirmez la suppression de \' {{$admins[$i]->nom ." ".$admins[$i]->prenom}}\' ')">
+                                            <th scope="row">{{$i+1}}</th>
+                                            <td>{{$admins[$i]->nom}}</td>
+                                            <td>{{$admins[$i]->prenom}}</td>
+                                            <td>{{$admins[$i]->email}}</td>
+                                            <input type="hidden" name="email" value="{{$admins[$i]->email}}" >
+                                            <td>
+                                                <button type="submit" class="btn btn-danger" @if(sizeof($admins)<2) disabled @endif>
+                                                    Supprimer
+                                                </button>
+                                            </td>
+
+
+
+                                        </form></tr>
+                                @endfor
+                                </tbody>
+                            </table>
+
+                         </div>
                         </div>
-                        <table class="table">
-                            <thead>
-                            <tr>
-                                <th scope="col">N°</th>
-                                <th scope="col">Nom</th>
-                                <th scope="col">Prenom</th>
-                                <th scope="col">N° Tel</th>
-                                <th scope="col"></th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            @for($i = 0; $i<sizeof($admins); $i ++ )
-                           <tr><form action="{{route('deleteAdmin')}}" method="post" onsubmit="confirm('Confirmez la suppression de \' {{$admins[$i]->nom ." ".$admins[$i]->prenom}}\' ')">
-                                <th scope="row">{{$i+1}}</th>
-                                <td>{{$admins[$i]->nom}}</td>
-                                <td>{{$admins[$i]->prenom}}</td>
-                                <td>{{$admins[$i]->email}}</td>
-                                   <input type="hidden" name="email" value="{{$admins[$i]->email}}" >
-                                   <td>
-                                       <button type="submit" class="btn btn-danger" @if(sizeof($admins)<2) disabled @endif>
-                                            Supprimer
-                                       </button>
-                                   </td>
 
 
-
-                               </form></tr>
-                            @endfor
-                            </tbody>
-                        </table>
                     </div>
 
 

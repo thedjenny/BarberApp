@@ -1,5 +1,6 @@
 (function($) {
 
+
 	"use strict";
 
 	document.addEventListener('DOMContentLoaded', function(){
@@ -90,8 +91,10 @@
         }
         o.className = "selectedDay";
         selectedDay = new Date(year, month, o.innerHTML);
+
         if(confirm("voulez-vous vraiment prendre ce jour " + convert(selectedDay))){
-                cancelDay(selectedDay);
+            
+                cancelDay(selectedDay,uri);
         }
         this.drawHeader(o.innerHTML);
         this.setCookie('selected_day', 1);
@@ -127,28 +130,25 @@
         return [date.getFullYear(), mnth, day].join("-");
       }
 
-      function cancelDay (str){
-          /*  $.post("http://localhost/admin/ajax",{
-                'csrf-token': $('meta[name=csrf-token]').attr('content'),
-                'day': str
-            })*/
+      function cancelDay (str , uri){
+
 
           $.ajax({
               '_token': $('meta[name=csrf-token]').attr('content'),
               type: 'POST',
               data: JSON.stringify({date : convert(selectedDay)}),
               contentType: "application/json",
-              url: 'http://localhost:8000/admin/CancelDay',
+              url: '/admin/CancelDay',
 
 
 
               success: function()
               {
-
+                  window.location.href = r_success;
               },
               error: function()
               {
-
+                  window.location.href = r_error;
               },
               complete: function()
               {

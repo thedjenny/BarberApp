@@ -10,8 +10,8 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <!-- Favicon icon -->
-    <link rel="icon" type="image/png" sizes="16x16" href="{{asset('/template/admin/assets/images/favicon.ico')}}">
-    <title>Taki Barbershop -Vacances</title>
+    <link rel="icon" type="image/png" sizes="16x16" href="{{asset('/template/admin/assets/images/favicon1.png')}}">
+    <title>Barber Vintage -Vacances</title>
     <!-- Custom CSS -->
     <link href="{{asset('/template/admin/assets/libs/magnific-popup/dist/magnific-popup.css')}}" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="{{asset('/template/admin/assets/extra-libs/multicheck/multicheck.css')}}">
@@ -62,7 +62,7 @@
                 <!-- ============================================================== -->
                 <!-- Logo -->
                 <!-- ============================================================== -->
-                <a class="navbar-brand" href="index.html">
+                <a class="navbar-brand" href="{{route('home')}}">
                     <!-- Logo icon -->
                     <b class="logo-icon p-l-10">
                         <!--You can put here icon as well // <i class="wi wi-sunset"></i> //-->
@@ -191,6 +191,7 @@
                     <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link" href="{{route('adminSetting')}}" aria-expanded="false"><i class="mdi mdi-pause-circle"></i><span class="hide-menu">Weekends</span></a></li>
 
                     <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link" href="{{route('editworkday')}}" aria-expanded="false"><i class="fas fa-stopwatch"></i><span class="hide-menu">Modifier journee libre</span></a></li>
+                    <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link" href="{{route('getCoiffures')}}" aria-expanded="false"><i class="fas fa-cut"></i><span class="hide-menu">Liste des coiffures</span></a></li>
                     <li class="sidebar-item"> <a class="sidebar-link has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false"><i class="mdi mdi-account-key"></i><span class="hide-menu">Administrateur </span></a>
                         <ul aria-expanded="false" class="collapse  first-level">
                             <li class="sidebar-item"><a href="{{route('registerAdmin')}}" class="sidebar-link"><i class="mdi mdi-account-settings-variant"></i><span class="hide-menu"> Ajouter admin </span></a></li>
@@ -213,7 +214,7 @@
         <div class="page-breadcrumb">
             <div class="row">
                 <div class="col-12 d-flex no-block align-items-center">
-                    <h4 class="page-title">Barbershop : Modifier les heures du Break-day</h4>
+                    <h4 class="page-title">Barber Vintage : Modifier les heures du Break-day</h4>
                     <div class="ml-auto text-right">
                         <nav aria-label="breadcrumb">
                         </nav>
@@ -262,10 +263,17 @@
                                         <td>{{$day->date}}</td>
                                         <td>{{$day->H_debut}}</td>
                                         <td>{{$day->H_fin}}</td>
+
                                         <td> <!-- new Content -->
-                                            <button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#exampleModal{{$loop->iteration}}">
+                                            <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#exampleModal{{$loop->iteration}}">
                                                 {{ __('Modifier') }}
                                             </button>
+                                            <form action="{{route('deleteWeekday')}}" method="post" onsubmit="confirm('Confirmez la suppression du jour libre?')">
+                                                <input type="hidden" name="date" value="{{$day->date}}">
+                                                <input type="hidden" name="day" value="{{$day->day}}">
+                                            <button type="submit" class="btn btn-sm btn-danger" >
+                                                {{ __('Supprimer') }}
+                                            </button></form>
 
                                             <!-- Modal popsup -->
                                             <div class="modal fade" id="exampleModal{{$loop->iteration}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -279,7 +287,7 @@
                                                         </div>
                                                         <form method="post" action="{{route('editweekday')}}" onsubmit="confirm('Confirmer modification svp?')" >     <div class="modal-body">
 
-                                                            <table class="table">
+                                                            <table class="table-responsive">
                                                                 <thead class=" text-primary">
                                                                 <th>
                                                                     Date
@@ -309,7 +317,7 @@
                                                             </table>
                                                             </div>
                                                         <div class="modal-footer">
-                                                            <button type="submit" class="btn btn-danger">Modifier</button>
+                                                            <button type="submit" class="btn btn-primary">Modifier</button>
                                                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
                                                         </div>
                                                         </form>   </div>

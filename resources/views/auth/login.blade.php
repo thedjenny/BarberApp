@@ -5,6 +5,8 @@
     <link href="{{ asset('template/login/style.css') }}" rel="stylesheet">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
+    <link rel="icon" type="image/png" sizes="16x16" href="{{asset('/template/admin/assets/images/favicon1.png')}}">
+
 
 </head>
 <body>
@@ -12,12 +14,12 @@
 <div class="container-fluid">
     <div class="row main-content bg-success text-center">
         <div class="col-md-4 text-center company__info">
-            <span><h2>Welcome Barber</h2></span>
+            <span><h2>Welcome Barber Vintage</h2></span>
         </div>
         <div class="col-md-8 col-xs-12 col-sm-12 login_form ">
             <div class="container-fluid">
                 <div class="row">
-                    <img src="{{ URL::to('/template/login/logo.png') }}">
+                    <img src="{{ URL::to('/template/login/logo1.png') }}">
                 </div>
                 <div class="row">
                     <form class="form-group" method="POST" action="{{ route('login') }}">
@@ -30,10 +32,10 @@
                         </div>
                         <div class="row">
                             <input type="checkbox" name="remember" {{ old('remember') ? 'checked' : '' }}>
-                            <label for="remember_me">Remember Me!</label>
+                            <label for="remember_me">Se souvenir de moi!</label>
                         </div>
                         <div class="row">
-                            <input type="submit" value="Submit" class="btn">
+                            <input type="submit" value="Se connecter" class="btn">
                         </div>
                     </form>
                 </div>

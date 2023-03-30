@@ -10,8 +10,8 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <!-- Favicon icon -->
-    <link rel="icon" type="image/png" sizes="16x16" href="{{asset('/template/admin/assets/images/favicon.ico')}}">
-    <title>Taki Barbershop - TODAY'S PLAN</title>
+    <link rel="icon" type="image/png" sizes="16x16" href="{{asset('/template/admin/assets/images/favicon1.ico')}}">
+    <title>Barber Vintage - TODAY'S PLAN</title>
     <!-- Custom CSS -->
     <link href="{{asset('/template/admin/assets/libs/magnific-popup/dist/magnific-popup.css')}}" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="{{asset('/template/admin/assets/extra-libs/multicheck/multicheck.css')}}">
@@ -148,7 +148,7 @@
                 <!-- ============================================================== -->
                 <!-- Logo -->
                 <!-- ============================================================== -->
-                <a class="navbar-brand" href="index.html">
+                <a class="navbar-brand" href="{{route('home')}}">
                     <!-- Logo icon -->
                     <b class="logo-icon p-l-10">
                         <!--You can put here icon as well // <i class="wi wi-sunset"></i> //-->
@@ -277,6 +277,7 @@
                     <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link" href="{{route('adminSetting')}}" aria-expanded="false"><i class="mdi mdi-pause-circle"></i><span class="hide-menu">Weekends</span></a></li>
 
                     <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link" href="{{route('editworkday')}}" aria-expanded="false"><i class="fas fa-stopwatch"></i><span class="hide-menu">Modifier journee libre</span></a></li>
+                    <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link" href="{{route('getCoiffures')}}" aria-expanded="false"><i class="fas fa-cut"></i><span class="hide-menu">Liste des coiffures</span></a></li>
                     <li class="sidebar-item"> <a class="sidebar-link has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false"><i class="mdi mdi-account-key"></i><span class="hide-menu">Administrateur </span></a>
                         <ul aria-expanded="false" class="collapse  first-level">
                             <li class="sidebar-item"><a href="{{route('registerAdmin')}}" class="sidebar-link"><i class="mdi mdi-account-settings-variant"></i><span class="hide-menu"> Ajouter admin </span></a></li>
@@ -299,7 +300,7 @@
         <div class="page-breadcrumb">
             <div class="row">
                 <div class="col-12 d-flex no-block align-items-center">
-                    <h4 class="page-title">Barbershop : Rendez-vous du <b>{{"\n".$date}}</b></h4>
+                    <h4 class="page-title">Barber Vintage : Rendez-vous du <b>{{"\n".$date}}</b></h4>
                     <div class="ml-auto text-right">
                         <nav aria-label="breadcrumb">
                             <ol class="breadcrumb">
@@ -310,7 +311,70 @@
                     </div>
                 </div>
             </div>
+            <br>
+            <div class="row">
+                <div class="col-12 d-flex no-block align-items-center">
+                    <button class="btn btn-success" data-toggle="modal" data-target="#AjoutModal">Ajouter nouveau rendez-vous</button>
+                </div>
+            </div>
         </div>
+
+        <div class="modal fade" id="AjoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Ajouter rendez-vous Offline</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Annuler">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <form method="post" action="{{route('addRdvOffline')}}" enctype="multipart/form-data">
+
+                        <div class="card">
+                            <div class="card-body">
+                                <input type="hidden" name="idCoiffeur" value="{{$idCoiffeur}}">
+                                <div class="form-group row">
+                                    <label class="col-md-3" for="disabledTextInput">Client</label>
+                                    <select name="client" class="form-select form-select-sm" aria-label=".form-select-sm example" required>
+                                        <option value="null" selected>Selectionnez un client ...</option>
+                                        @foreach($clients as $c)
+                                            <option value="{{$c->idClient}}" >{{$c->username}} </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label class="col-md-3" for="points">Type coupe</label>
+                                    <select name="coupe" class="form-select form-select-sm" aria-label=".form-select-sm example" required>
+                                        <option value="null" selected>Selectionnez une coupe ...</option>
+                                        @foreach($coiffure as $cf)
+                                            <option value="{{$cf->nom}}" >{{$cf->nom}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label class="col-md-3" for="points">Jour rendez-vous</label>
+                                    <select name="day" class="form-select form-select-sm" aria-label=".form-select-sm example" required>
+                                        <option  value="0" selected>Aujourd'hui</option>
+                                        <option value="1">Demain</option>
+                                        <option value="2">Apres-demain</option>
+                                    </select>
+                                </div>
+
+
+                            </div>
+                            <div class="border-top">
+                                <div class="card-body">
+                                    <input type="submit" class="btn btn-primary"/>
+                                </div>
+                            </div>
+                        </div>
+                    </form> </div>
+            </div>
+        </div>
+
+
         <!-- ============================================================== -->
         <!-- End Bread crumb and right sidebar toggle -->
         <!-- ============================================================== -->
@@ -349,7 +413,7 @@
                                     <tbody>
 
                                     @foreach($data as $c)
-                                        <tr><form id="present" action="{{route('isPresent')}}" method="post" >
+                                        <tr><form id="present{{$loop->iteration}}" action="{{route('isPresent')}}" method="post" onsubmit="confirm('Client {{$c->username}} est present?')">
                                             <td>
                                                 <div class="row el-element-overlay">
                                                     <div class="card">
@@ -371,11 +435,17 @@
                                             <td>{{$c->points}}</td><input type="hidden" name="points" value="{{$c->points}}">
                                             <td>{{$c->time}}</td>
                                             <td>
+                                                @if($c->isPresent != 1)
                                                     <label class="switch">
+                                                        <input type="checkbox" name="present" value="true"  onchange="document.getElementById('present'+{{$loop->iteration}}).submit() " >
 
-                                                        <input type="checkbox" name="present" value="true"  onchange="confirm('Client {{$c->username}} est present?');document.getElementById('present').submit() " @if($c->isPresent) disabled @endif >
                                                         <span class="slider"></span>
                                                     </label>
+                                                @else
+                                                    <button type="button" class="btn btn-success" disabled>
+                                                        <i class="fas fa-check-circle font-24"></i>
+                                                    </button>
+                                                @endif
 
                                             </td></form>
                                             </tr>

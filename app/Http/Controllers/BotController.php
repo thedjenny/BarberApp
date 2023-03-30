@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Coiffure;
 use App\Settings;
 use App\Weekday;
 use Carbon\Carbon;
@@ -9,6 +10,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 
 use Illuminate\Http\Request;
+use phpDocumentor\Reflection\Types\Object_;
 
 class BotController extends Controller
 {
@@ -21,7 +23,6 @@ class BotController extends Controller
 
     public function bot(Request $request)
     {
-
 
         $data = $request->all();
         //get the user’s id
@@ -43,9 +44,8 @@ class BotController extends Controller
             $command = $msg["postback"]["payload"];
             $this->sendSeen($id);
             $this->sendTypingOn($id);
-            $this->sendAttachmentMessage($id);
+            $this->handlePostBack($id,$command);
 
-            $this->sendTextMessage($id,"hi");
         }
 
     }
@@ -63,7 +63,7 @@ class BotController extends Controller
             case "GET_STARTED":
                 {
                     $user = $this->getUsername($recipientId);
-                    $msg = "\n 💈 💈 ✂ ⚜ مرحبا بك في صفحتنا باربر برو للحلاقة";
+                    $msg = "\n 💈 💈 ✂ ⚜ مرحبا بك في صفحتنا باربر فينتاج للحلاقة العصرية";
                     $this->sendTextMessage($recipientId, $msg);
                     $this->sendTextMessage($recipientId, $user . " 😍");
                     $this->sendFirstMessage($recipientId);
@@ -75,7 +75,7 @@ class BotController extends Controller
                 $this->sendFirstMessage($recipientId);
                 break;
             case "prendre_rdv":
-                $this->filterDays($recipientId);
+                $this->send3Days($recipientId);
                 break;
 
             case "today":
@@ -84,27 +84,30 @@ class BotController extends Controller
                     $this->sendAttachmentMessage($recipientId, $day);
                 }
                 break;
-            case "tomorrow":
+            case "tmrw":
                 {
                     $day = 1;
+                   // $this->sendTextMessage($recipientId,"hi");
                     $this->sendAttachmentMessage($recipientId, $day);
                 }
                 break;
-            case "totomorrow":
+            case "ttmrw":
                 {
                     $day = 2;
                     $this->sendAttachmentMessage($recipientId, $day);
+                    //$this->sendTextMessage($recipientId,"hi");
                 }
                 break;
 
             case "myrdv":
                 {
-                    $this->myrdv($recipientId);
+                    //$this->sendTextMessage($recipientId,"hi");
+                    $this->sendRdv($recipientId);
                 }
                 break;
             case "show_how":
             {
-                $this->sendVideoMessage($recipientId,"https://youtube.com/watch?v=cHCUomfPHZM");
+                $this->sendTextMessage($recipientId,"https://www.youtube.com/watch?v=PFc2zzQERqU");
             }
             break;
 
@@ -178,33 +181,9 @@ class BotController extends Controller
       */
 
     }
-    public function send2days($id){
 
-    }
-    public function send2daysTodayTomorrow($id){
 
-    }
 
-    public function translateDay($day){
-        switch ($day){
-            case "Saturday":
-                $day="Samedi";break;
-            case "Sunday":
-                $day="Dimanche";break;
-            case "Monday":
-                $day="Lundi";break;
-            case "Tuesday":
-                $day = "Mardi";break;
-            case "Wednesday":
-                $day = "Mercredi";break;
-            case "Thursday":
-                $day = "Jeudi";break;
-            case "Friday":
-                $day = "Vendredi";break;
-            default:
-                return view('error');
-        }
-    }
     public function sendImageMessage($recipientId, $url)
     {
 
@@ -217,7 +196,7 @@ class BotController extends Controller
                 "attachment" => [
                     "type" => "image",
                     "payload" => [
-                        "url" => "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSuRBLJ4t1pihoYjY4ozK0cJzTIV2GqPlWT2i7Kkghu5zS5NtyRtWY4QniVWOJS28e_NHM&usqp=CAU",
+                        "url" => $url,
                         "is_reusable" => true
 
                     ],
@@ -227,7 +206,7 @@ class BotController extends Controller
 
         // dd($messageData);
 
-        $ch = curl_init('https://graph.facebook.com/v6.0/me/messages?access_token=' . env("PAGE_ACCESS_TOKEN"));
+        $ch = curl_init('https://graph.facebook.com/v11.0/me/messages?access_token=' . env("PAGE_ACCESS_TOKEN"));
         // curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         // curl_setopt($ch, CURLOPT_HEADER, false);
         curl_setopt($ch, CURLOPT_HTTPHEADER, ["Content-Type: application/json"]);
@@ -260,7 +239,7 @@ class BotController extends Controller
 
         // dd($messageData);
 
-        $ch = curl_init('https://graph.facebook.com/v6.0/me/messages?access_token=' . env("PAGE_ACCESS_TOKEN"));
+        $ch = curl_init('https://graph.facebook.com/v11.0/me/messages?access_token=' . env("PAGE_ACCESS_TOKEN"));
         // curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         // curl_setopt($ch, CURLOPT_HEADER, false);
         curl_setopt($ch, CURLOPT_HTTPHEADER, ["Content-Type: application/json"]);
@@ -271,8 +250,10 @@ class BotController extends Controller
 
     }
 
-    public function sendAttachmentMessage($recipientId)
+    public function sendAttachmentMessage($recipientId,$day)
     {
+
+        $elements = $this->getCoiffures($recipientId,$day);
 
         $messageData = [
             "recipient" => [
@@ -285,40 +266,44 @@ class BotController extends Controller
                     "payload" => [
                         "template_type" => "generic",
 
-                        "elements" => [
+                        "elements" =>$elements /*[
                             [
                                 "title" => "ديقرادي",
-                                "image_url" => "https://tikbarber.herokuapp.com/img.jpg",
+                                "image_url" => "https://taki.berrehal.xyz/coiffures/1.jpg",
                                 "subtitle" => "250.00 DA",
 
 
                                 "default_action" => [
                                     "type" => "web_url",
-                                    "url" => "https://tikbarber.herokuapp.com",
+                                    "url" => "https://taki.berrehal.xyz/users/crenos/$recipientId/1/$day",
                                     "messenger_extensions" => true,
-                                    "webview_height_ratio" => "tall"
+                                    "webview_height_ratio" => "tall",
+                                    "webview_share_button"=>"hide"
+
                                 ],
 
                                 "buttons" => [
                                     [
                                         "title" => "احجز موعد الان",
                                         "type" => "web_url",
-                                        "url" => "https://tikbarber.herokuapp.com",
-                                        "webview_height_ratio" => "tall"
+                                        "url" => "https://taki.berrehal.xyz/users/crenos/$recipientId/1/$day",
+                                        "webview_height_ratio" => "tall",
+                                    "webview_share_button"=>"hide"
                                     ],
                                 ],
-                            ],/*
+                            ],
                             [
                                 "title" => "ليسار + قصة شعر",
-                                "image_url" => "https://www.biblond.com/wp-content/uploads/2015/09/55f67d62979f5.jpg",
+                                "image_url" => "https://taki.berrehal.xyz/coiffures/2.jpg",
                                 "subtitle" => "400.00 DA",
 
 
                                 "default_action" => [
                                     "type" => "web_url",
-                                    "url" => "https://taki.berrehal.xyz/users/crenos/$recipientId/2/$day",
+                                    "url" => "https://taki.berrehal.xyz/users/crenos/$recipientId/2/$day", //"https://taki.berrehal.xyz/users/crenos/$recipientId/2/$day",
                                     "messenger_extensions" => true,
-                                    "webview_height_ratio" => "tall"
+                                    "webview_height_ratio" => "tall",
+                                    "webview_share_button"=>"hide"
                                 ],
 
                                 "buttons" => [
@@ -326,13 +311,14 @@ class BotController extends Controller
                                         "title" => "احجز موعد الان",
                                         "type" => "web_url",
                                         "url" => "https://taki.berrehal.xyz/users/crenos/$recipientId/2/$day",
-                                        "webview_height_ratio" => "tall"
+                                        "webview_height_ratio" => "tall",
+                                    "webview_share_button"=>"hide"
                                     ],
                                 ],
                             ],
                             [
                                 "title" => "كيراتين + قصة شعر",
-                                "image_url" => "https://blogscdn.thehut.net/wp-content/uploads/sites/32/2018/06/15172422/1200x672_240517197_MC_MK_Blog_Imagery_June_Image13_1200x672_acf_cropped.jpg",
+                                "image_url" => "https://taki.berrehal.xyz/coiffures/3.jpg",
                                 "subtitle" => "3000.00 DA",
 
 
@@ -340,7 +326,8 @@ class BotController extends Controller
                                     "type" => "web_url",
                                     "url" => "https://taki.berrehal.xyz/users/crenos/$recipientId/3/$day",
                                     "messenger_extensions" => true,
-                                    "webview_height_ratio" => "tall"
+                                    "webview_height_ratio" => "tall",
+                                    "webview_share_button"=>"hide"
                                 ],
 
                                 "buttons" => [
@@ -348,13 +335,14 @@ class BotController extends Controller
                                         "title" => "احجز موعد الان",
                                         "type" => "web_url",
                                         "url" => "https://taki.berrehal.xyz/users/crenos/$recipientId/3/$day",
-                                        "webview_height_ratio" => "tall"
+                                        "webview_height_ratio" => "tall",
+                                    "webview_share_button"=>"hide"
                                     ],
                                 ],
                             ],
                             [
                                 "title" => "لحية",
-                                "image_url" => "https://www.barb-art.fr/blog/wp-content/uploads/2019/02/brosse-barbe-1.jpg",
+                                "image_url" => "https://taki.berrehal.xyz/coiffures/4.jpg",
                                 "subtitle" => "150.00 DA",
 
 
@@ -362,7 +350,8 @@ class BotController extends Controller
                                     "type" => "web_url",
                                     "url" => "https://taki.berrehal.xyz/users/crenos/$recipientId/4/$day",
                                     "messenger_extensions" => true,
-                                    "webview_height_ratio" => "tall"
+                                    "webview_height_ratio" => "tall",
+                                    "webview_share_button"=>"hide"
                                 ],
 
                                 "buttons" => [
@@ -370,13 +359,14 @@ class BotController extends Controller
                                         "title" => "احجز موعد الان",
                                         "type" => "web_url",
                                         "url" => "https://taki.berrehal.xyz/users/crenos/$recipientId/4/$day",
-                                        "webview_height_ratio" => "tall"
+                                        "webview_height_ratio" => "tall",
+                                    "webview_share_button"=>"hide"
                                     ],
                                 ],
                             ],
                             [
                                 "title" => "كيراتين",
-                                "image_url" => "https://rukminim1.flixcart.com/image/416/416/kmz7qfk0/hair-treatment/c/u/w/1000-keratin-nourishing-hair-mask-tmt-original-imagfrbpacvz5e3d.jpeg",
+                                "image_url" => "https://taki.berrehal.xyz/coiffures/5.jpg",
                                 "subtitle" => "1500.00 DA",
 
 
@@ -384,7 +374,8 @@ class BotController extends Controller
                                     "type" => "web_url",
                                     "url" => "https://taki.berrehal.xyz/users/crenos/$recipientId/5/$day",
                                     "messenger_extensions" => true,
-                                    "webview_height_ratio" => "tall"
+                                    "webview_height_ratio" => "tall",
+                                    "webview_share_button"=>"hide"
                                 ],
 
                                 "buttons" => [
@@ -392,13 +383,14 @@ class BotController extends Controller
                                         "title" => "احجز موعد الان",
                                         "type" => "web_url",
                                         "url" => "https://taki.berrehal.xyz/users/crenos/$recipientId/5/$day",
-                                        "webview_height_ratio" => "tall"
+                                        "webview_height_ratio" => "tall",
+                                    "webview_share_button"=>"hide"
                                     ],
                                 ],
                             ],
                             [
                                 "title" => "VIP تسريحة",
-                                "image_url" => "https://d2zdpiztbgorvt.cloudfront.net/region1/us/105344/biz_photo/67f9a2cbc5084feaa3f31dd277400c-vip-barber-lounge-llc-biz-photo-98f1fc544ec5478eb7165636ed69f8-booksy.jpeg",
+                                "image_url" => "https://taki.berrehal.xyz/coiffures/6.jpg",
                                 "subtitle" => "3500.00 DA",
 
 
@@ -406,7 +398,8 @@ class BotController extends Controller
                                     "type" => "web_url",
                                     "url" => "https://taki.berrehal.xyz/users/crenos/$recipientId/6/$day",
                                     "messenger_extensions" => true,
-                                    "webview_height_ratio" => "tall"
+                                    "webview_height_ratio" => "tall",
+                                    "webview_share_button"=>"hide"
                                 ],
 
                                 "buttons" => [
@@ -414,13 +407,14 @@ class BotController extends Controller
                                         "title" => "احجز موعد الان",
                                         "type" => "web_url",
                                         "url" => "https://taki.berrehal.xyz/users/crenos/$recipientId/6/$day",
-                                        "webview_height_ratio" => "tall"
+                                        "webview_height_ratio" => "tall",
+                                    "webview_share_button"=>"hide"
                                     ],
                                 ],
                             ],
                             [
                                 "title" => "ليسار + سيشوار",
-                                "image_url" => "https://www.anoos.com/assets/img/hair-straight.jpg",
+                                "image_url" => "https://taki.berrehal.xyz/coiffures/7.jpg",
                                 "subtitle" => "150.00 DA",
 
 
@@ -428,7 +422,8 @@ class BotController extends Controller
                                     "type" => "web_url",
                                     "url" => "https://taki.berrehal.xyz/users/crenos/$recipientId/7/$day",
                                     "messenger_extensions" => true,
-                                    "webview_height_ratio" => "tall"
+                                    "webview_height_ratio" => "tall",
+                                    "webview_share_button"=>"hide"
                                 ],
 
                                 "buttons" => [
@@ -436,11 +431,12 @@ class BotController extends Controller
                                         "title" => "احجز موعد الان",
                                         "type" => "web_url",
                                         "url" => "https://taki.berrehal.xyz/users/crenos/$recipientId/7/$day",
-                                        "webview_height_ratio" => "tall"
+                                        "webview_height_ratio" => "tall",
+                                    "webview_share_button"=>"hide"
                                     ],
                                 ],
-                            ],*/
-                        ],
+                            ],
+                        ],*/
 
                     ],
                 ],
@@ -460,6 +456,69 @@ class BotController extends Controller
 
     }
 
+
+    public function sendRdv($recipientId)
+    {
+        $url = env('APP_URL').'/myrdv/'.$recipientId;
+
+
+        $messageData = [
+            "recipient" => [
+                "id" => $recipientId,
+            ],
+            "message" => [
+
+                "attachment" => [
+                    "type" => "template",
+                    "payload" => [
+                        "template_type" => "generic",
+
+                        "elements" => [
+                            [
+                                "title" => "🏆 رصيدي و مواعيدي",
+                                "image_url" => $this->getProfilePicture($recipientId),
+                                "subtitle" => "",
+
+
+                                "default_action" => [
+                                    "type" => "web_url",
+                                    "url" => $url,
+                                    "messenger_extensions" => true,
+                                    "webview_height_ratio" => "tall",
+                                    "webview_share_button"=>"hide"
+
+                                ],
+
+                                "buttons" => [
+                                    [
+                                        "title" => "🎁 تفقد مواعيدك - رصيدك 🕔",
+                                        "type" => "web_url",
+                                        "url" => "https://taki.berrehal.xyz/myrdv/$recipientId",
+                                        "webview_height_ratio" => "tall",
+                                        "webview_share_button"=>"hide"
+                                    ],
+                                ],
+                            ],
+
+                        ],
+
+                    ],
+                ],
+            ],
+        ];
+
+        //dd($messageData);
+
+        $ch = curl_init('https://graph.facebook.com/v11.0/me/messages?access_token=' . env("PAGE_ACCESS_TOKEN"));
+        // curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        // curl_setopt($ch, CURLOPT_HEADER, false);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, ["Content-Type: application/json"]);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($messageData));
+        curl_exec($ch);
+        curl_close($ch);
+
+    }
 
     public function sendTest($reciepientId){
         $attachment_url = "https://tikbarber.herokuapp.com/img.jpg";
@@ -504,9 +563,7 @@ class BotController extends Controller
         curl_close($ch);
     }
 
-    public function sendTestAtt($recipientId){
 
-    }
     public function send3Days($recipientId)
     {
 
@@ -530,13 +587,14 @@ class BotController extends Controller
                             [
                                 "title" => "⏰ غدا",
                                 "type" => "postback",
-                                "payload" => "tomrrow"
+                                "payload" => "tmrw"
                             ],
-                            [
+                             [
                                 "title" => "⏰ بعد غد",
                                 "type" => "postback",
-                                "payload" => "totomorrow"
+                                "payload" => "ttmrw"
                             ],
+                           
                         ],
 
                     ],
@@ -546,7 +604,7 @@ class BotController extends Controller
 
         //dd($messageData);
 
-        $ch = curl_init('https://graph.facebook.com/v6.0/me/messages?access_token=' . env("PAGE_ACCESS_TOKEN"));
+        $ch = curl_init('https://graph.facebook.com/v11.0/me/messages?access_token=' . env("PAGE_ACCESS_TOKEN"));
         // curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         // curl_setopt($ch, CURLOPT_HEADER, false);
         curl_setopt($ch, CURLOPT_HTTPHEADER, ["Content-Type: application/json"]);
@@ -568,14 +626,15 @@ class BotController extends Controller
                     "type" => "template",
                     "payload" => [
                         "template_type" => "button",
-                        "text" => "مبروك لقد تم حجز موعدك بنجاح شكرا على ثقتك 🙏",
+                        "text" => "✅ مبروك لقد تم حجز موعدك بنجاح شكرا على ثقتك 🙏",
 
                         "buttons" => [
                             [
                                 "title" => "تصفح مواعيدي",
                                 "type" => "web_url",
-                                "url" => "https://5f26fa99f86a.ngrok.io/myrdv/$recipientId",
-                                "webview_height_ratio" => "tall"
+                                "url" => "https://taki.berrehal.xyz/myrdv/$recipientId",
+                                "webview_height_ratio" => "tall",
+                                "webview_share_button"=>"hide"
                             ],
 
                         ],
@@ -587,7 +646,7 @@ class BotController extends Controller
 
         //dd($messageData);
 
-        $ch = curl_init('https://graph.facebook.com/v6.0/me/messages?access_token=' . env("PAGE_ACCESS_TOKEN"));
+        $ch = curl_init('https://graph.facebook.com/v11.0/me/messages?access_token=' . env("PAGE_ACCESS_TOKEN"));
         // curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         // curl_setopt($ch, CURLOPT_HEADER, false);
         curl_setopt($ch, CURLOPT_HTTPHEADER, ["Content-Type: application/json"]);
@@ -632,7 +691,7 @@ class BotController extends Controller
 
         //dd($messageData);
 
-        $ch = curl_init('https://graph.facebook.com/v6.0/me/messages?access_token=' . env("PAGE_ACCESS_TOKEN"));
+        $ch = curl_init('https://graph.facebook.com/v11.0/me/messages?access_token=' . env("PAGE_ACCESS_TOKEN"));
         // curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         // curl_setopt($ch, CURLOPT_HEADER, false);
         curl_setopt($ch, CURLOPT_HTTPHEADER, ["Content-Type: application/json"]);
@@ -656,7 +715,7 @@ class BotController extends Controller
         ];
 
         //dd($messageData);
-        $ch = curl_init('https://graph.facebook.com/v6.0/me/messages?access_token=' . env("PAGE_ACCESS_TOKEN"));
+        $ch = curl_init('https://graph.facebook.com/v11.0/me/messages?access_token=' . env("PAGE_ACCESS_TOKEN"));
         // curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         // curl_setopt($ch, CURLOPT_HEADER, false);
         curl_setopt($ch, CURLOPT_HTTPHEADER, ["Content-Type: application/json"]);
@@ -689,7 +748,7 @@ class BotController extends Controller
 
         // dd($messageData);
 
-        $ch = curl_init('https://graph.facebook.com/v6.0/me/messages?access_token=' . env("PAGE_ACCESS_TOKEN"));
+        $ch = curl_init('https://graph.facebook.com/v11.0/me/messages?access_token=' . env("PAGE_ACCESS_TOKEN"));
         // curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         // curl_setopt($ch, CURLOPT_HEADER, false);
         curl_setopt($ch, CURLOPT_HTTPHEADER, ["Content-Type: application/json"]);
@@ -708,7 +767,7 @@ class BotController extends Controller
             ],
             "sender_action" => "typing_on"
         ];
-        $ch = curl_init('https://graph.facebook.com/v6.0/me/messages?access_token=' . env("PAGE_ACCESS_TOKEN"));
+        $ch = curl_init('https://graph.facebook.com/v11.0/me/messages?access_token=' . env("PAGE_ACCESS_TOKEN"));
         // curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         // curl_setopt($ch, CURLOPT_HEADER, false);
         curl_setopt($ch, CURLOPT_HTTPHEADER, ["Content-Type: application/json"]);
@@ -727,7 +786,7 @@ class BotController extends Controller
             ],
             "sender_action" => "mark_seen"
         ];
-        $ch = curl_init('https://graph.facebook.com/v6.0/me/messages?access_token=' . env("PAGE_ACCESS_TOKEN"));
+        $ch = curl_init('https://graph.facebook.com/v11.0/me/messages?access_token=' . env("PAGE_ACCESS_TOKEN"));
         // curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         // curl_setopt($ch, CURLOPT_HEADER, false);
         curl_setopt($ch, CURLOPT_HTTPHEADER, ["Content-Type: application/json"]);
@@ -770,29 +829,51 @@ class BotController extends Controller
 
     public function myrdv($recipientId){
 
-
         $messageData = [
             "recipient" => [
                 "id" => $recipientId,
             ],
             "message" => [
+
                 "attachment" => [
                     "type" => "template",
                     "payload" => [
-                        "template_type" => "web_url",
-                                "title" => "🏆 رصيدي و مواعيدي",
-                                "url" => "https://5f26fa99f86a.ngrok.io/myrdv/$recipientId",
-                                "webview_height_ratio" => "tall"
+                        "template_type" => "generic",
 
+                        "elements" => [
+
+                            [
+                                "title" => "🏆 رصيدي و مواعيدي",
+                                "image_url" => "",
+                                "subtitle" => "",
+
+
+                                "default_action" => [
+                                    "type" => "web_url",
+                                    "url" => "https://taki.berrehal.xyz/myrdv/$recipientId", //"https://taki.berrehal.xyz/users/crenos/$recipientId/2/$day",
+                                    "messenger_extensions" => true,
+                                    "webview_height_ratio" => "tall",
+                                    "webview_share_button"=>"hide"
+                                ],
+
+                                "buttons" => [
+                                    [
+                                        "title" => "🎁 تفقد مواعيدك - رصيدك 🕔",
+                                        "type" => "web_url",
+                                        "url" => "https://taki.berrehal.xyz/myrdv/$recipientId",
+                                        "webview_height_ratio" => "tall",
+                                        "webview_share_button"=>"hide"
+                                    ],
+                                ],
+                            ],
+
+                        ],
 
                     ],
                 ],
             ],
         ];
-
-        //dd($messageData);
-
-        $ch = curl_init('https://graph.facebook.com/v6.0/me/messages?access_token=' . env("PAGE_ACCESS_TOKEN"));
+        $ch = curl_init('https://graph.facebook.com/v11.0/me/messenger_profile?access_token=' . env("PAGE_ACCESS_TOKEN"));
         // curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         // curl_setopt($ch, CURLOPT_HEADER, false);
         curl_setopt($ch, CURLOPT_HTTPHEADER, ["Content-Type: application/json"]);
@@ -805,6 +886,7 @@ class BotController extends Controller
 
     public function persistantMenu()
     {
+        $appurl = env('APP_URL');
         $message_data = [
             "get_started" => [
                 "payload" => "GET_STARTED",
@@ -817,7 +899,7 @@ class BotController extends Controller
                     "call_to_actions" => [
                         [
                             "type" => "postback",
-                            "title" => "📅 22احجز موعد",
+                            "title" => "📅 احجز موعد",
                             "payload" => "prendre_rdv"],
                         [
                             "type" => "postback",
@@ -837,15 +919,13 @@ class BotController extends Controller
             ],
             "whitelisted_domains"=> [
                 "https://www.google.com/",
-                "https://www.barbededarwin.fr",
-                "https://www.yahoo.com",
-                "https://tikbarber.herokuapp.com"
+                $appurl
     ]
         ];
 
 
         //dd($messageData);
-        $ch = curl_init('https://graph.facebook.com/v10.0/me/messenger_profile?access_token=' . env("PAGE_ACCESS_TOKEN"));
+        $ch = curl_init('https://graph.facebook.com/v11.0/me/messenger_profile?access_token=' . env("PAGE_ACCESS_TOKEN"));
         // curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         // curl_setopt($ch, CURLOPT_HEADER, false);
         curl_setopt($ch, CURLOPT_HTTPHEADER, ["Content-Type: application/json"]);
@@ -855,6 +935,29 @@ class BotController extends Controller
         curl_close($ch);
     }
 
+    public function getCoiffures($recipientId,$day){
+
+        $coiffures = Coiffure::all();
+        $elements = [];
+        foreach ($coiffures as $c){
+            $elem = [
+                "title" => $c->nom,
+                "image_url" => env('APP_URL').'/storage/product/'.$c->photo ,
+                "subtitle" => $c->prix .'.00DA',
+                "default_action" => [
+                    "type" => "web_url",
+                    "url" => env('APP_URL')."/users/crenos/".$recipientId.'/'.$c->id.'/'.$day,
+                    "messenger_extensions" => true,
+                    "webview_height_ratio" => "tall",
+                    "webview_share_button"=>"hide"
+
+                ]
+            ];
+            array_push($elements,$elem);
+        }
+
+        return $elements;
+    }
 
 
 
